@@ -26,13 +26,15 @@ class ActualPrediction {
     // Constructors
     ActualPrediction(NexTradingDay nexTradingDay) {
         String mysqlUrlConnection = (new DB_Credentials()).getProperty("mySqlUrlConnection");
-        String sqlCommand = """
-                SELECT\s
+        @SuppressWarnings("preview")
+		String sqlCommand = 
+				"""
+				SELECT
                     dealDate, ticker, forecast
                 FROM
                     GetYahooPrices.Prognosis
                 WHERE
-                    forecastTime = (SELECT\s
+                    forecastTime = (SELECT
                             MAX(forecastTime)
                         FROM
                             GetYahooPrices.Prognosis);
