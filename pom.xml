@@ -17,7 +17,9 @@
 
 
     <build>
+        <!--
         <finalName>my-project-name</finalName>
+        -->
         <plugins>
 
             <!-- other Maven plugins ... -->
@@ -31,7 +33,15 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+
+
+                    <archive>
+                        <manifest>
+                            <mainClass>Investments.Bolt.QuantConnectDeploy.Deploy</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
+
 
                 <executions>
                     <execution>
