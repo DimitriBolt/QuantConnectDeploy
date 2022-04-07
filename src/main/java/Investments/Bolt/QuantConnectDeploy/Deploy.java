@@ -11,7 +11,7 @@ public class Deploy {
     boolean is_toFTP_ok;
     boolean is_Deploy_ok;
     boolean is_toCSV_ok;
-    private NexTradingDay nexTradingDay;
+//    private NexTradingDay nexTradingDay;
 
 
     public static void main(String args[]) {
@@ -28,18 +28,21 @@ public class Deploy {
         NexTradingDay nexTradingDay = new NexTradingDay(LocalDate.now(), 1);
 
         ActualPrediction actualPrediction = new ActualPrediction(nexTradingDay);
+        
+        //TODO Нужно вызывать без iFile
+//        ActualPortfolio actualPortfolio = new ActualPortfolio(iFile, actualPrediction, nexTradingDay);
+        ActualPortfolio actualPortfolio = new ActualPortfolio(actualPrediction, nexTradingDay);
 
-        ActualPortfolio actualPortfolio = new ActualPortfolio(iFile, actualPrediction, nexTradingDay);
+        
         boolean is_toCSV_ok = to_csv(actualPortfolio, nexTradingDay);
 //        boolean is_toFTP_ok = to_ftp(actualPortfolio, nexTradingDay);
-        int i = 1;
 
 
     }
-
     private static boolean to_csv(ActualPortfolio actualPortfolio, NexTradingDay nexTradingDay) {
         String csv = "ticker\t" + ZonedDateTime.now() + "\n" + actualPortfolio.getActualPortfolio().toString().replace("{", "").replace("}", "").replace(", ", "\n").replace("=", "\t");
-        try (FileOutputStream out = new FileOutputStream("/home/dimitri/Documents/Forecasts/portfolio-" + nexTradingDay.getNextTradingDay() + ".csv");
+        // https://mkyong.com/java/how-to-construct-a-file-path-in-java/
+        try (FileOutputStream out = new FileOutputStream(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Forecasts" + File.separator + "portfolio-" + nexTradingDay.getNextTradingDay() + ".csv");
              BufferedOutputStream bos = new BufferedOutputStream(out)) {
             // перевод строки в байты
             byte[] buffer = csv.getBytes();

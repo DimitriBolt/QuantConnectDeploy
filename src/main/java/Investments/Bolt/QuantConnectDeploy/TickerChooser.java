@@ -4,18 +4,23 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
 class TickerChooser {
     // static Class variables
     // private Instance variable
-    private HashSet<String> tickers = new HashSet<>();
+    private HashSet<String> tickerS = new HashSet<>();
 
     // Initializer block
     {
     }
-
     // Constructors
     TickerChooser(File iFile) {
 //		https://javadevblog.com/kak-schitat-csv-fajl-v-java.html !!
@@ -32,7 +37,7 @@ class TickerChooser {
                 while (scanner.hasNext()) {
                     String data = scanner.next();
                     if (index == 1)
-                        this.tickers.add(data);
+                        this.tickerS.add(data);
                     index++;
                 }
             }
@@ -40,12 +45,34 @@ class TickerChooser {
             System.out.println(ex.getMessage());
         }
     }
-
+    TickerChooser() {
+    	String mysqlUrlConnection = (new DB_Credentials()).getProperty("mySqlUrlConnection");
+    	String sqlCommand = 
+				"""
+				SELECT DISTINCT
+				    ticker
+				FROM
+				    GetYahooPrices.prices_qc_valid;
+                """;
+    	try (Connection conn = DriverManager.getConnection(mysqlUrlConnection)) { // Подключился к БД из DB_Credentials()
+            // https://www.examclouds.com/ru/java/java-core-russian/try-with-resources
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlCommand);
+            String ticker;
+            while (resultSet.next()) {
+            	// получение содержимого строк
+                ticker = resultSet.getString("ticker");
+                this.tickerS.add(ticker);
+            }
+        } catch (Exception ex) {
+            System.out.println("\nConnection failed...");
+            ex.printStackTrace();
+        }
+    }
     // Methods
     // Mutator (= setter) methods
     // Accessor (= getter) methods
     HashSet<String> getTickers() {
-        return this.tickers;
+        return this.tickerS;
     }
-
 }

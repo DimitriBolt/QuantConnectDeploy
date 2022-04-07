@@ -22,6 +22,19 @@ class ActualPortfolio {
         WideNextDayPortfolio wideNextDayPortfolio = new WideNextDayPortfolio(shortNextDayPortfolio, tickerChooser);
         actualPortfolio = wideNextDayPortfolio.getWidePortfolio();
     }
+    //TODO нужен второй конструктор без File
+    public ActualPortfolio(ActualPrediction actualPrediction, NexTradingDay nexTradingDay) {
+
+        var allPredictionS = actualPrediction.getPredictedTickers();
+        var nextDayPrediction = allPredictionS.get(nexTradingDay.getNextTradingDay());
+
+        ShortNextDayPortfolio shortNextDayPortfolio = new ShortNextDayPortfolio(nextDayPrediction);
+
+        TickerChooser tickerChooser = new TickerChooser();
+
+        WideNextDayPortfolio wideNextDayPortfolio = new WideNextDayPortfolio(shortNextDayPortfolio, tickerChooser);
+        actualPortfolio = wideNextDayPortfolio.getWidePortfolio();
+    }
     // Methods
     // Mutator (= setter) methods
     // Accessor (= getter) methods
